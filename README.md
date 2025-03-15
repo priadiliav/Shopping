@@ -1,0 +1,1 @@
+docker build -t shoppingclient -f .\Shopping.Client\Dockerfile .
