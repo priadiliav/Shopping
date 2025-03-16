@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Shopping.Client/Shopping.Client.csproj", "Shopping.Client/"]
-RUN dotnet restore "./Shopping.Client/Shopping.Client.csproj"
+COPY ["Shopping.Api/Shopping.Api.csproj", "Shopping.Api/"]
+RUN dotnet restore "./Shopping.Api/Shopping.Api.csproj"
 COPY . .
-WORKDIR "/src/Shopping.Client"
-RUN dotnet build "./Shopping.Client.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Shopping.Api"
+RUN dotnet build "./Shopping.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Shopping.Client.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Shopping.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Shopping.Client.dll"]
+ENTRYPOINT ["dotnet", "Shopping.Api.dll"]

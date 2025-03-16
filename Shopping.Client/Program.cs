@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,7 +8,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ShoppingAPIClient", client =>
 {
-  client.BaseAddress = new Uri("http://localhost:5012/");
+  client.BaseAddress = new Uri(builder.Configuration["ShoppingAPIUrl"]);
+}).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+{
+  ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
 });
 
 var app = builder.Build();

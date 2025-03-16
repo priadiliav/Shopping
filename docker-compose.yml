@@ -1,0 +1,24 @@
+services:
+  shopping.api:
+    image: ${DOCKER_REGISTRY-}shoppingapi
+    build:
+      context: .
+      dockerfile: Shopping.Api/Dockerfile
+    networks:
+      - shopping-network
+
+  shopping.client:
+    image: ${DOCKER_REGISTRY-}shoppingclient
+    build:
+      context: .
+      dockerfile: Shopping.Client/Dockerfile
+    networks:
+      - shopping-network
+
+  shopping.db:
+    image: mongo
+    networks:
+      - shopping-network
+
+networks:
+  shopping-network:

@@ -12,7 +12,7 @@ public class ProductContext
     var client = new MongoClient(configuration["DatabaseSettings:ConnectionString"]);
     var database = client.GetDatabase(configuration["DatabaseSettings:DatabaseName"]);
     Products = database.GetCollection<Product>(configuration["DatabaseSettings:CollectionName"]);
-    Seed(Products).GetAwaiter().GetResult(); // Викликаємо асинхронний метод синхронно в конструкторі
+    Seed(Products).GetAwaiter().GetResult();
   }
 
   private async static Task Seed(IMongoCollection<Product> products)
