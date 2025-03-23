@@ -1,0 +1,40 @@
+#account
+az login
+
+#resourse group
+az group list (get all)
+az group create --resource-group <name> --location <location> (create)
+
+#acr
+az acr create --resource-group <res_group> --name <name> --sku Basic (create)
+az acr update --name <name> <options> (updating acr configuration)
+az acr login --name <name> (login as addmin for pushing containers)
+az acr repository list --name shoppingacr --output table (get all containers in registry)
+
+#aks
+az aks install-cli - download cli
+# for some reason i have to register it myselft
+az provider register --namespace Microsoft.ContainerService
+
+#check login acr
+az acr list --resource-group <res_group> --query "[].{acrLoginServer:loginServer}" --output table
+
+# then i have to create aks
+az aks create --resource-group Shopping --name shoppingaks --node-count 1 --generate-ssh-keys --attach-acr shoppingacr
+#download aks context 
+az aks get-credentials --resource-group Shopping --name shoppingaks
+kubectl config get-contexts
+
+#docker taging for acr
+docker tag <image_name:version> <acr_name>.azurecr.io/<image_nmae:version>
+
+docker push <acr_name>.azurecr.io/<image_nmae:version>
+
+
+J2OyKRCXRm/fXzkKlIdPU2u3YDgmm5WdMq0SDiesP/+ACRAmB3iJ
+0ZAEI3Z43BTBGj1HbUSZSSJ1mq3mbBqA5sgUDUsMEa+ACRBufea1
+
+kubectl create secret docker-registry acr-secret --docker-server=shoppingacr.azurecr.io --docker-username=shoppingacr --docker-password=J2OyKRCXRm/fXzkKlIdPU2u3YDgmm5WdMq0SDiesP/+ACRAmB3iJ --docker-email=vitalii.priadilia.personal@gmail.com
+
+
+kubectl create secret docker-registry acr-secret --docker-server=shoppingacr.azurecr.io --docker-username=shoppingacr --docker-password=J2OyKRCXRm/fXzkKlIdPU2u3YDgmm5WdMq0SDiesP/+ACRAmB3iJ --docker-email=vitalii.priadilia.personal@gmail.com

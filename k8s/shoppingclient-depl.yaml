@@ -1,38 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shoppingapi-deployment
+  name: shoppingclient-deployment
   labels:
-    app: shoppingapi
+    app: shoppingclient
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shoppingapi
+      app: shoppingclient
   template:
     metadata:
       labels:
-        app: shoppingapi
+        app: shoppingclient
     spec:
       containers:
-        - name: shoppingapi
-          image: vitaliipriadilia/shoppingapi:latest
+        - name: shoppingclient
+          image: vitaliipriadilia/shoppingclient:latest
           ports:
             - containerPort: 8080
           resources:
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "100m"
             requests:
               memory: "64Mi"
-              cpu: "250m"
+              cpu: "50m"
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Production
-            - name: DatabaseSettings__ConnectionString
+            - name: ShoppingAPIUrl
               valueFrom:
                 configMapKeyRef:
-                  name: mongo-configmap
-                  key: database_url
-      volumes:
-        - name: mongo-storage
+                  name: shoppingclient-configmap
+                  key: ShoppingAPIUrl
