@@ -22,12 +22,33 @@ public class HomeController : Controller
   public async Task<IActionResult> Index()
   {
     var response = await _httpClient.GetAsync("/api/products");
+
+    if (!response.IsSuccessStatusCode)
+    {
+        _logger.LogError("API call failed with status code: {StatusCode}", response.StatusCode);
+        return View(new List<Product>());
+    }
+
     var content = await response.Content.ReadAsStringAsync();
     
-    var productList = JsonSerializer.Deserialize<IEnumerable<Product>>(content,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    if (string.IsNullOrWhiteSpace(content))
+    {
+        _logger.LogError("API response is empty.");
+        return View(new List<Product>());
+    }
 
-    return View(productList);
+    try
+    {
+        var productList = JsonSerializer.Deserialize<IEnumerable<Product>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        return View(productList);
+    }
+    catch (JsonException ex)
+    {
+        _logger.LogError(ex, "Error deserializing response content.");
+        return View(new List<Product>());
+    }
   }
 
   public IActionResult Privacy()
