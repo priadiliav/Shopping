@@ -8,7 +8,7 @@ trigger:
       - main
   paths:
     include:
-      - ShoppingApi/**
+      - Shopping.Api/**
       - aks/shoppingapi-depl.yaml
       - aks/shoppingapi-service.yaml
 
